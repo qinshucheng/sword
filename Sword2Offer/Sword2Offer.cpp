@@ -229,6 +229,8 @@ BinaryTreeNode* Construct(int*preorder, int*inorder, int length) {
 	return ConstructCore(preorder, preorder + length - 1, inorder, inorder + length - 1);
 }
 
+//07
+
 
 int main()
 {	//2
