@@ -4,10 +4,13 @@
 #include "stdafx.h"
 
 #include "list.h"
-#include "tree.h"
+//#include "tree.h"
 
 #include <stack>
+#include<iostream>
+#include<math.h>
 
+using namespace std;
 //02
 int GetSize(int data[]) {
 	return sizeof(data);
@@ -190,6 +193,7 @@ void PrintListReversingly_Recursively(ListNode* pHead) {
 }
 
 //07
+/*
 BinaryTreeNode* ConstructCore(int* startPreorder, int* endPreorder, 
 	int* startInorder, int* endInorder) {
 	int rootValue = startPreorder[0];
@@ -228,6 +232,7 @@ BinaryTreeNode* Construct(int*preorder, int*inorder, int length) {
 	}
 	return ConstructCore(preorder, preorder + length - 1, inorder, inorder + length - 1);
 }
+*/
 
 //08
 struct BinaryTreeNode {
@@ -257,6 +262,100 @@ BinaryTreeNode* GetNext(BinaryTreeNode* pNode) {
 	}
 	return pNext;
 }
+//10
+long long Fibonacci(unsigned n) {
+	int result[2] = { 0,1 };
+	if (n < 2)
+		return result[n];
+	long long fibNMinusOne = 1;
+	long long fibNMinusTwo = 0;
+	long long fibN = 0;
+	for (unsigned int i = 2; i <= n; ++i) {
+		fibN = fibNMinusOne + fibNMinusTwo;
+		fibNMinusTwo = fibNMinusOne;
+		fibNMinusOne = fibN;
+	}
+	return fibN;
+}
+//2.4.2
+int RandomInRange(int start, int end) {
+	int dis = end - start;
+	return rand()%dis + start;
+}
+void Swap(int *da, int *db) {
+	int temp = *da;
+	*da = *db;
+	*db = temp;
+}
+int Partition(int data[], int length, int start, int end) {
+	if (data == nullptr || length <= 0 || start < 0 || end >= length) {
+		throw new std::exception("Invalid Paremeters");
+	}
+	int index = RandomInRange(start, end);
+	Swap(&data[index], &data[end]);
+	for (int i = 0; i < 6; ++i) {
+		cout << data[i] << "-";
+	}cout << endl;
+
+	int small = start - 1;
+	for (index = start; index < end; ++index) {
+		if (data[index] < data[end]) {
+			++small;
+			if (small != index)
+				Swap(&data[index], &data[small]);
+			for (int i = 0; i < 6; ++i) {
+				cout << data[i] << "-";
+			}cout << endl;
+		}
+	}
+	++small;
+	Swap(&data[small], &data[end]);
+	for (int i = 0; i < 6; ++i) {
+		cout << data[i] << "-";
+	}cout << endl;
+	return small;
+}
+void QuickSort(int data[], int length, int start, int end) {
+	if (start == end)
+		return;
+	int index = Partition(data, length, start, end);
+	cout << "partition is " << index << endl;
+	if (index > start)
+		QuickSort(data, length, start, index - 1);
+	if (index < end)
+		QuickSort(data, length, index + 1, end);
+
+}
+//11
+int MinInOrder(int* numbers, int index1, int index2) {
+	int result = numbers[index1];
+	for (int i = index1 + 1; i <= index2; ++i) {
+		if (result > numbers[i])
+			result = numbers[i];
+	}
+	return result;
+}
+int Min(int * numbers, int length) {
+	if (numbers == nullptr || length <= 0)
+		throw new exception("Invalid parameters");
+	int index1 = 0;
+	int index2 = length - 1;
+	int indexMid = index1;
+	while (numbers[index1] >= numbers[index2]) {
+		if (index2 - index1 == 1) {
+			indexMid = index2;
+			break;
+		}
+		indexMid = (index1 + index2) / 2;
+		if (numbers[index1] == numbers[index2] && numbers[indexMid] == numbers[index1])
+			return MinInOrder(numbers, index1, index2);
+		if (numbers[indexMid] >= numbers[index1])
+			index1 = indexMid;
+		else if (numbers[indexMid] <= numbers[index2])
+			index2 = indexMid;
+	}
+	return numbers[indexMid];
+}
 
 
 int main()
@@ -276,6 +375,17 @@ int main()
 	else { printf("str1 and str2 are not same"); }
 	if (str3 == str4) { printf("str3 and str4 are same"); }
 	else { printf("str3 and str4 are not same"); }
+
+	std::cout << endl << "1:10Ëæ»úÊý£º" << RandomInRange(1, 10) << endl;
+	int a[2] = { 1,2 };
+	Swap(&a[0], &a[1]);
+	cout << "a=" << a[0] << endl << "b=" << a[1] << endl;
+	//10
+	int data[6] = { 3, 1, 2, 6, 9, 7 };
+	QuickSort(data, 6, 0, 5);
+	for (int i = 0; i < 6; ++i) {
+		cout << data[i]<<"-";
+	}cout << endl;
 
     return 0;
 }

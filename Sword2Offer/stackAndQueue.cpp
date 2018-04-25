@@ -1,3 +1,4 @@
+#include"stdafx.h"
 #include"stackAndQueue.h"
 
 //队列头部添加元素
