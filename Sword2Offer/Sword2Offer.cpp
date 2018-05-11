@@ -356,6 +356,172 @@ int Min(int * numbers, int length) {
 	}
 	return numbers[indexMid];
 }
+//12
+bool hasPathCore(const char* matrix, int rows, int cols, int row, int col, const char* str, int& pathLength, bool* visited) {
+	if (str[pathLength] == '\0')
+		return true;
+	bool hasPath = true;
+	if (row >= 0 && row < rows&&col >= 0 && col < cols&&matrix[row*cols + col] == str[pathLength] && !visited[row*cols + col]) {
+		++pathLength;
+		visited[row*cols + col] = true;
+		hasPath = hasPathCore(matrix, rows, cols, row, col - 1, str, pathLength, visited)
+			|| hasPathCore(matrix, rows, cols, row - 1, col, str, pathLength, visited)
+			|| hasPathCore(matrix, rows, cols, row, col + 1, str, pathLength, visited)
+			|| hasPathCore(matrix, rows, cols, row + 1, col, str, pathLength, visited);
+		if (!hasPath) {
+			--pathLength;
+			visited[row*cols + col] = false;
+		}
+	}
+	return hasPath;
+}
+bool hasPath(char* matrix, int rows, int cols, char* str) {
+	if (matrix == nullptr || rows < 1 || cols < 1 || str == nullptr)
+		return false;
+	bool *visited = new bool[rows * cols];
+	memset(visited, 0, rows*cols);//将visited初始化为[false,false...]
+	int pathLength = 0;
+	for (int row = 0; row < rows; ++row) {
+		for (int col = 0; col < cols; ++col) {
+			if (hasPathCore(matrix, rows, cols, row, col, str, pathLength, visited))
+				return true;
+		}
+	}
+	delete[] visited;
+	return false;
+}
+//13
+int getDigitSum(int number) {
+	int sum = 0;
+	while (number > 0) {
+		sum += number % 10;
+		number /= 10;
+	}
+	return sum;
+}
+bool check(int threshold, int rows, int cols, int row, int col, bool* visited) {
+	if (row >= 0 && row < rows&&col >= 0 && col < cols&&getDigitSum(row) + getDigitSum(col) <= threshold && !visited[row*cols + col])
+		return true;
+	return false;
+}
+int movingCountCore(int threshold, int rows, int cols, int row, int col, bool* visited) {
+	int count = 0;
+	if (check(threshold, rows, cols, row, col, visited)) {
+		count = 1 + movingCountCore(threshold, rows, cols, row - 1, col, visited)
+			+ movingCountCore(threshold, rows, cols, row, col - 1, visited)
+			+ movingCountCore(threshold, rows, cols, row + 1, col, visited)
+			+ movingCountCore(threshold, rows, cols, row, col + 1, visited);
+	} 
+	return count;
+}
+int movingCount(int threshold, int rows, int cols) {
+	if (threshold < 0 || rows <= 0 || cols <= 0)
+		return 0;
+	bool *visited = new bool[rows*cols];
+	for (int i = 0; i < rows*cols; ++i)
+		visited[i] = false;
+	int count = movingCountCore(threshold, rows, cols, 0, 0, visited);
+
+	delete[] visited;
+	return count;
+}
+//14
+//动态规划法
+int maxProductAfterCutting_solution(int length) {
+	if (length < 2)
+		return 0;
+	if (length == 2)
+		return 1;
+	if (length == 3)
+		return 2;
+	int* products = new int[length + 1];
+	products[0] = 0;
+	products[1] = 1;
+	products[2] = 2;
+	products[3] = 3;
+	int max = 0;
+
+	for (int i = 4; i < length; ++i) {
+		max = 0;
+		for (int j = 1; j <= i / 2; ++j) {
+			int product = products[j] * products[i - j];
+			if (max < product)
+				max = product;
+			products[i] = max;
+		}
+	}
+	max = products[length];
+	delete[] products;
+	return max;
+}
+//17全排列
+void PrintNumber(char* number) {
+	bool isBeginning0 = true;
+	int nLength = strlen(number);
+
+	for (int i = 0; i < nLength; ++i) {
+		if (isBeginning0&&number[i] != '0')
+			isBeginning0 = false;
+		if (!isBeginning0)
+			printf("%c", number[i]);
+	}
+	printf("\t");
+}
+void Print1ToMaxOfNDigitsRecursively(char* number, int length, int index) {
+	if (index == length - 1) {
+		PrintNumber(number);
+		return;
+	}
+	for (int i = 0; i < 10; ++i)
+	{
+		number[index + 1] = i + '0';
+		Print1ToMaxOfNDigitsRecursively(number, length, index + 1);
+	}
+}
+void Print1ToMaxOfNDigits(int n) {
+	if (n < 0)
+		return;
+	char* number = new char[n + 1];
+	number[n] = '\0';
+	for (int i = 0; i < 10; ++i) {
+		number[0] = i+'0';
+		Print1ToMaxOfNDigitsRecursively(number, n, 0);
+	}
+	delete[] number;
+}
+//18_2
+void DeleteDuplication(ListNode** pHead) {
+	if (pHead == nullptr || *pHead == nullptr)
+		return;
+	ListNode* pPreNode = nullptr;
+	ListNode* pNode = *pHead;
+	while (pNode != nullptr) {
+		ListNode* pNext = pNode->m_pNext;
+		bool needDelete = false;
+		if (pNext != nullptr&&pNext->m_nValue == pNode->m_nValue) {
+			needDelete = true;
+		}
+		if (!needDelete) {
+			pPreNode = pNode;
+			pNode = pNode->m_pNext;
+		}
+		else {
+			int value = pNode->m_nValue;
+			ListNode* pToBeDel = pNode;
+			while (pToBeDel != nullptr&&pToBeDel->m_nValue == value) {
+				pNext = pToBeDel->m_pNext;
+				delete pToBeDel;
+				pToBeDel = nullptr;
+				pToBeDel = pNext;
+			}
+			if (pPreNode == nullptr)
+				*pHead = pNext;
+			else
+				pPreNode->m_pNext = pNext;
+			pNode = pNext;
+		}
+	}
+}
 
 
 int main()
@@ -386,6 +552,18 @@ int main()
 	for (int i = 0; i < 6; ++i) {
 		cout << data[i]<<"-";
 	}cout << endl;
+	//12
+	char* matrix = "abtgcfcsjdeh";
+	char* str = "bfce";
+	if (hasPath(matrix, 3, 4, str))
+		cout << "There is a path found" << endl;
+	else
+		cout << "No path found" << endl;
 
-    return 0;
+	char num[] = "56";
+	int mn = num[1] - '0' + 1;
+	cout << "mn = " << mn << endl;
+
+	Print1ToMaxOfNDigits(8);
+	return 0;
 }
