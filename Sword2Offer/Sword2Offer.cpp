@@ -631,6 +631,75 @@ ListNode* EntryNodeOfLoop(ListNode* pHead) {
 	}
 	return pNode1;
 }
+//24
+ListNode* ReverseList(ListNode* pHead) {
+	ListNode* pReversedHead = nullptr;
+	ListNode* pNode = pHead;
+	ListNode* pPrev = nullptr;
+	while (pNode != nullptr) {
+		ListNode* pNext = pNode->m_pNext;
+		if (pNext == nullptr)
+			pReversedHead = pNext;
+		pNode->m_pNext = pPrev;
+		pPrev = pNode;
+		pNode = pNext;
+	}
+	return pReversedHead;
+}
+//25
+ListNode* Merge(ListNode* pHead1, ListNode* pHead2) {
+	if (pHead1 == nullptr)
+		return pHead2;
+	if (pHead2 == nullptr)
+		return pHead1;
+	ListNode* pMergedHead = nullptr;
+	if (pHead1->m_nValue < pHead2->m_nValue) {
+		pMergedHead = pHead1;
+		pMergedHead->m_pNext = Merge(pHead1->m_pNext, pHead2);
+	}
+	else {
+		pMergedHead = pHead2;
+		pMergedHead->m_pNext = Merge(pHead1, pHead2->m_pNext);
+	}
+	return pMergedHead;
+}
+//26
+bool HasSubtree(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2) {
+	bool result = false;
+	if (pRoot1 != nullptr&&pRoot2 != nullptr) {
+		if (pRoot1->m_nValue == pRoot2->m_nValue)
+			result = DoesTrere1HaveTree2(pRoot1, pRoot2);
+		if (!result)
+			result = HasSubtree(pRoot1->m_pLeft, pRoot2);
+		if (!result)
+			result = HasSubtree(pRoot1->m_pRight, pRoot2);
+	}
+	return result;
+}
+bool DoesTrere1HaveTree2(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2) {
+	if (pRoot2 == nullptr)
+		return true;
+	if (pRoot1 == nullptr)
+		return false;
+	if (pRoot1->m_nValue!=pRoot2->m_nValue)
+		return false;
+	return DoesTrere1HaveTree2(pRoot1->m_pLeft, pRoot2->m_pLeft) && DoesTrere1HaveTree2(pRoot1->m_pRight, pRoot2->m_pRight);
+}
+//27
+void MirrorRecursively(BinaryTreeNode* pNode) {
+	if (pNode == nullptr)
+		return;
+	if (pNode->m_pLeft == nullptr&&pNode->m_pRight == nullptr)
+		return;
+	BinaryTreeNode* pTemp = pNode->m_pLeft;
+	pNode->m_pLeft = pNode->m_pRight;
+	pNode->m_pRight = pTemp;
+
+	if (pNode->m_pLeft)
+		MirrorRecursively(pNode->m_pLeft);
+	if (pNode->m_pRight)
+		MirrorRecursively(pNode->m_pRight);
+}
 
 int main()
 {	//2
