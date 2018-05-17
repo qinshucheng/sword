@@ -10,6 +10,8 @@
 #include<iostream>
 #include<math.h>
 
+#include<vector>
+
 using namespace std;
 //02
 int GetSize(int data[]) {
@@ -522,7 +524,113 @@ void DeleteDuplication(ListNode** pHead) {
 		}
 	}
 }
+//19
+bool matchCore(char*str, char*pattern) {
+	if (*str == '\0'&&*pattern == '\0')
+		return true;
+	if (*str != '\0'&&pattern == '\0')
+		return false;
+	if(*(pattern+1)=='*'){
+		if (*pattern == *str || (*pattern == '.'&&*str != '\0'))
+			return matchCore(str + 1, pattern + 2) || matchCore(str + 1, pattern) || matchCore(str, pattern + 2);
+		else
+			return matchCore(str, pattern + 2);
+	}
+	if (*str == *pattern || (*pattern == '.'&&*str != '\0'))
+		return matchCore(str + 1, pattern + 1);
+	return false;
+}
+bool match(char*str, char*pattern) {
+	if (str == nullptr || pattern == nullptr)
+		return false;
+	return matchCore(str, pattern);
+}
+//20
+bool scanUnsignedInteger(const char** str) {
+	const char* before = *str;
+	while (**str != '\0'&&**str >= '0'&&**str <= '9')
+		++(*str);
+	return *str > before;
+}
+bool scanInteger(const char** str) {
+	if (**str == '+' || **str == '-')
+		++(*str);
+	return scanUnsignedInteger(str);
+}
+bool isNumeric(const char* str) {
+	if (str == nullptr)
+		return false;
+	bool numeric = scanInteger(&str);
+	if (*str == '.') {
+		++str;
+		numeric = scanUnsignedInteger(&str) || numeric;
+	}
+	if (*str == 'e' || *str == 'E') {
+		++str;
+		numeric = numeric&&scanInteger(&str);
+	}
+	return numeric&&*str == '\0';
+}
+//21
+void Recorder(int *pData, unsigned int length, bool (*func)(int)) {
+	if (pData == nullptr || length == 0)
+		return;
+	int *pBegin = pData;
+	int *pEnd = pData + length - 1;
+	while (pBegin < pEnd) {
+		while (pBegin < pEnd && !func(*pBegin))
+			pBegin++;
+		while (pBegin < pEnd && func(*pEnd))
+			pEnd--;
+		if (pBegin < pEnd) {
+			int temp = *pBegin;
+			*pBegin = *pEnd;
+			*pEnd = temp;
+		}
+	}
+}
+bool isEvent(int n) {
+	return (n & 1) == 0;
+}
 
+//23
+ListNode* MeetingNode(ListNode* pHead) {
+	if (pHead == nullptr)
+		return nullptr;
+	ListNode* pSlow = pHead->m_pNext;
+	if (pSlow == nullptr)
+		return nullptr;
+	ListNode* pFast = pSlow->m_pNext;
+	while (pFast != nullptr&&pSlow != nullptr) {
+		if (pFast == pSlow)
+			return pFast;
+		pSlow = pSlow->m_pNext;
+		pFast = pFast->m_pNext;
+		if (pFast != nullptr)
+			pFast = pFast->m_pNext;
+	}
+	return nullptr;
+}
+ListNode* EntryNodeOfLoop(ListNode* pHead) {
+	ListNode* meetingNode = MeetingNode(pHead);
+	if (meetingNode == nullptr)
+		return nullptr;
+	int nodesInLoop = 1;
+	ListNode* pNode1 = meetingNode;
+	while (pNode1->m_pNext != meetingNode) {
+		pNode1 = pNode1->m_pNext;
+		++nodesInLoop;
+	}
+	pNode1 = pHead;
+	for (int i = 0; i < nodesInLoop; ++i)
+		pNode1 = pNode1->m_pNext;
+	ListNode* pNode2 = pHead;
+	while (pNode1 != pNode2) {
+		pNode1 = pNode1->m_pNext;
+		pNode2 = pNode2->m_pNext;
+	}
+	return pNode1;
+}
 
 int main()
 {	//2
@@ -563,7 +671,27 @@ int main()
 	char num[] = "56";
 	int mn = num[1] - '0' + 1;
 	cout << "mn = " << mn << endl;
+	//17
+	//Print1ToMaxOfNDigits(3);
+	//19
+	if (match("aaa", "ab*ac*a"))
+		cout << "match!" << endl;
+	else
+		cout << "not match!" << endl;
+	//20
+	if (isNumeric("123.45e+7"))
+		cout << "It is a number!" << endl;
+	else
+		cout << "It is not a number!" << endl;
+	//21
+	int mData[] = { 1, 2, 3, 4, 5, 6, 7 };
+	Recorder(mData, 7, isEvent);
+	
+	for each (int index in mData)
+	{
+		cout << index << "  ";
+	}cout << endl;
+	
 
-	Print1ToMaxOfNDigits(8);
 	return 0;
 }
