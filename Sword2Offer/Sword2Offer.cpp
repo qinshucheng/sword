@@ -5,6 +5,7 @@
 
 #include "list.h"
 //#include "tree.h"
+#include "ComplexListNode.h"
 
 #include <stack>
 #include<iostream>
@@ -664,6 +665,7 @@ ListNode* Merge(ListNode* pHead1, ListNode* pHead2) {
 	return pMergedHead;
 }
 //26
+bool DoesTrere1HaveTree2(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2);
 bool HasSubtree(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2) {
 	bool result = false;
 	if (pRoot1 != nullptr&&pRoot2 != nullptr) {
@@ -700,7 +702,171 @@ void MirrorRecursively(BinaryTreeNode* pNode) {
 	if (pNode->m_pRight)
 		MirrorRecursively(pNode->m_pRight);
 }
+//28
+void printNumber(int number) {
+	printf(number+ " ");
+}
+void PrintMatrixInCircle(int** numbers, int columns, int rows, int start) {
+	int endX = columns - 1 - start;
+	int endY = rows - 1 - start;
 
+	//从左到右
+	for (int i = start; i <= endX; ++i) {
+		int number = numbers[start][i];
+		printNumber(number);
+	}
+	//从上到下
+	if (start < endY) {
+		for (int i = start + 1; i < endY; ++i) {
+			int number = numbers[i][endY];
+			printNumber(number);
+		}
+	}
+	//从右到左
+	if (start < endX && start < endY) {
+		for (int i = endX - 1; i >= start; --i) {
+			int number = numbers[endY][i];
+			printNumber(number);
+		}
+	}
+	//从下到上
+	if (start < endY && start < endY - 1) {
+		for (int i = endY - 1; i >= start + 1; --i) {
+			int number = numbers[i][start];
+			printNumber(number);
+		}
+	}
+}
+void PrintMatrixClockwisely(int** numbers, int columns, int rows) {
+	if (numbers == nullptr || columns <= 0 || rows <= 0)
+		return;
+	int start = 0;
+	while (columns > start * 2 && rows > start * 2) {
+		PrintMatrixInCircle(numbers, columns, rows, start);
+		++start;
+	}
+}
+
+//35 复制复杂链表
+void CloneNodes(ComplexListNode* pHead) {
+	ComplexListNode* pNode = pHead;
+	while (pNode != nullptr) {
+		ComplexListNode* pCloned = new ComplexListNode();
+		pCloned->m_nValue = pNode->m_nValue;
+		pCloned->m_pNext = pNode->m_pNext;
+		pCloned->m_pSibling = nullptr;
+
+		pNode->m_pNext = pCloned;
+		pNode = pCloned->m_pNext;
+	}
+}
+void ConnectSiblingNOdes(ComplexListNode* pHead) {
+	ComplexListNode* pNode = pHead;
+	while (pNode != nullptr) {
+		ComplexListNode* pCloned = pNode->m_pNext;
+		if (pNode->m_pSibling != nullptr) {
+			pCloned->m_pSibling = pNode->m_pSibling->m_pNext;
+		}
+		pNode = pCloned->m_pNext;
+	}
+}
+ComplexListNode* ReconnectNodes(ComplexListNode* pHead) {
+	ComplexListNode* pNode = pHead;
+	ComplexListNode* pClonedHead = nullptr;
+	ComplexListNode* pClonedNode = nullptr;
+
+	if (pNode != nullptr) {
+		pClonedHead = pClonedNode = pNode->m_pNext;
+		pNode->m_pNext = pClonedNode->m_pNext;
+		pNode = pNode->m_pNext;
+	}
+	while (pNode != nullptr) {
+		pClonedNode->m_pNext = pNode->m_pNext;
+		pClonedNode = pClonedNode->m_pNext;
+		pNode->m_pNext = pClonedNode->m_pNext;
+		pNode = pNode->m_pNext;
+	}
+	return pClonedHead;
+}
+//36
+struct BInaryTreeNode {
+	int m_nValue;
+	BInaryTreeNode* m_pLeft;
+	BInaryTreeNode* m_pRight;
+};
+void ConvertNode(BInaryTreeNode* pNode, BInaryTreeNode** pLastNodeInList);
+
+BInaryTreeNode* Convert(BInaryTreeNode* pRootOfTree) {
+	BInaryTreeNode* pLastNodeInList = nullptr;
+	ConvertNode(pRootOfTree, &pLastNodeInList);
+
+	BInaryTreeNode* pHeadOfList = pLastNodeInList;
+	while (pHeadOfList != nullptr && pHeadOfList->m_pLeft != nullptr) {
+		pHeadOfList = pHeadOfList->m_pLeft;
+	}
+	return pHeadOfList;
+}
+void ConvertNode(BInaryTreeNode* pNode, BInaryTreeNode** pLastNodeInList) {
+	if (pNode == nullptr)
+		return;
+	BInaryTreeNode* pCurrent = pNode;
+	if (pCurrent->m_pLeft != nullptr)
+		ConvertNode(pCurrent->m_pLeft, pLastNodeInList);
+
+	pCurrent->m_pLeft = *pLastNodeInList;
+	if (*pLastNodeInList != nullptr)
+		(*pLastNodeInList)->m_pRight = pCurrent;
+	*pLastNodeInList = pCurrent;
+	if (pCurrent->m_pRight != nullptr)
+		ConvertNode(pCurrent->m_pRight, pLastNodeInList);
+}
+
+//38
+void Permutation(char* pStr, char* pBegin);
+void Permutation(char* pStr) {
+	if (pStr == nullptr)
+		return;
+	Permutation(pStr, pStr);
+}
+void Permutation(char* pStr, char* pBegin) {
+	if (*pBegin == '\0') {
+		printf("%s\n", pStr);
+	}
+	else {
+		for (char* pCh = pBegin; *pCh != '\0'; ++pCh) {
+			char temp = *pCh;
+			*pCh = *pBegin;
+			*pBegin = temp;
+
+			Permutation(pStr, pBegin + 1);
+
+			temp = *pCh;
+			*pCh = *pBegin;
+			*pBegin = temp;
+		}
+	}
+}
+//39_2
+int MoreThanHalfNum(int* numbers, int length) {
+	//
+	int result = numbers[0];
+	int times = 1;
+	for (int i = 1; i < length; ++i) {
+		if (times == 0) {
+			result = numbers[i];
+			times = 1;
+		}
+		else if(numbers[i]==result) {
+			times++;
+		}
+		else {
+			times--;
+		}
+		cout << i<<"::"<<result<<endl;
+	}
+	return result;
+	//
+}
 int main()
 {	//2
 	int data1[] = { 1,2,3,4,5 };
@@ -760,7 +926,13 @@ int main()
 	{
 		cout << index << "  ";
 	}cout << endl;
-	
+
+	//38
+	char dString[] = "abcd";
+	Permutation(dString, dString);
+	//39
+	int mNum[] = { 1,2,3,2,2,2,5,4,2 };
+	cout << MoreThanHalfNum(mNum, 9)<<endl;
 
 	return 0;
 }

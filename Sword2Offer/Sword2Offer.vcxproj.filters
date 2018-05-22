@@ -36,6 +36,12 @@
     <ClInclude Include="stackAndQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StackWithMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ComplexListNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stackAndQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StackWithMin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

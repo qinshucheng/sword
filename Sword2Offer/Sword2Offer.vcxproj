@@ -146,14 +146,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binaryTreeNode.h" />
+    <ClInclude Include="ComplexListNode.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="stackAndQueue.h" />
+    <ClInclude Include="StackWithMin.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stackAndQueue.cpp" />
+    <ClCompile Include="StackWithMin.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
