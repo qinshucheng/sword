@@ -295,13 +295,16 @@ int Partition(int data[], int length, int start, int end) {
 		throw new std::exception("Invalid Paremeters");
 	}
 	int index = RandomInRange(start, end);
+	cout << "index is " << index << endl;
 	Swap(&data[index], &data[end]);
 	for (int i = 0; i < 6; ++i) {
 		cout << data[i] << "-";
 	}cout << endl;
 
 	int small = start - 1;
+	cout << "small is " << small << endl;
 	for (index = start; index < end; ++index) {
+		cout << "data[index] is " << data[index] << endl;
 		if (data[index] < data[end]) {
 			++small;
 			if (small != index)
@@ -888,7 +891,7 @@ int main()
 	std::cout << endl << "1:10Ëæ»úÊý£º" << RandomInRange(1, 10) << endl;
 	int a[2] = { 1,2 };
 	Swap(&a[0], &a[1]);
-	cout << "a=" << a[0] << endl << "b=" << a[1] << endl;
+	//cout << "a=" << a[0] << endl << "b=" << a[1] << endl;
 	//10
 	int data[6] = { 3, 1, 2, 6, 9, 7 };
 	QuickSort(data, 6, 0, 5);
